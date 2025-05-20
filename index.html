@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenataStore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    .blur-edges {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .video-bg::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans relative">
+  <!-- Video Background -->
+  <video autoplay muted loop id="bg-video" class="fixed top-0 left-0 w-full h-full object-cover -z-10">
+    <source src="assets/back.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="flex min-h-screen relative z-10">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900/80 text-white flex flex-col p-4 space-y-6 rounded-tr-2xl rounded-br-2xl">
+      <div class="text-2xl font-bold text-center text-cyan-400">ZenataStore</div>
+      <nav class="flex flex-col space-y-4">
+        <a href="#" id="home-button" class="flex items-center space-x-2 hover:text-cyan-400 cursor-pointer">
+          <span>🏠</span> <span>Home</span>
+        </a>
+        <a href="#" id="stats-button" class="flex items-center space-x-2 hover:text-cyan-400 cursor-pointer">
+          <span>📊</span> <span>Stats</span>
+        </a>
+        <a href="#" id="notify-button" class="flex items-center space-x-2 hover:text-cyan-400 cursor-pointer">
+          <span>🛒</span> <span>Notify</span>
+        </a>
+        <a href="#" id="member-button" class="flex items-center space-x-2 hover:text-cyan-400 cursor-pointer">
+          <span>👤</span> <span>Member</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-gray-900/80 p-4 shadow flex justify-between items-center rounded-bl-2xl">
+        <h1 id="main-title" class="text-xl font-semibold text-lime-400">Dashboard Overview</h1>
+        <div class="flex items-center space-x-4">
+          <input type="text" placeholder="Search..." class="px-3 py-1 border rounded-lg focus:outline-none text-black" />
+          <span>🔔</span>
+          <span>👤</span>
+        </div>
+      </header>
+
+      <!-- Dashboard Section -->
+      <section id="dashboard-section" class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-800/70 p-6 rounded-xl shadow-md flex flex-col items-start space-y-3">
+          <i class="fa fa-user-secret text-pink-500 text-5xl"></i>
+          <p class="text-sm text-gray-300">Users</p>
+          <h2 class="text-2xl font-bold text-pink-400">4,234</h2>
+        </div>
+        <div class="bg-gray-800/70 p-6 rounded-xl shadow-md flex flex-col items-start space-y-3">
+          <i class="fa fa-dollar-sign text-green-400 text-5xl"></i>
+          <p class="text-sm text-gray-300">Revenue</p>
+          <h2 class="text-2xl font-bold text-green-300">$23,456</h2>
+        </div>
+        <div class="bg-gray-800/70 p-6 rounded-xl shadow-md flex flex-col items-start space-y-3">
+          <i class="fa fa-shopping-cart text-yellow-400 text-5xl"></i>
+          <p class="text-sm text-gray-300">Orders</p>
+          <h2 class="text-2xl font-bold text-yellow-300">2,990</h2>
+        </div>
+        <div class="bg-gray-800/70 p-6 rounded-xl shadow-md flex flex-col items-start space-y-3">
+          <i class="fa fa-chart-line text-cyan-400 text-5xl"></i>
+          <p class="text-sm text-gray-300">Growth</p>
+          <h2 class="text-2xl font-bold text-cyan-300">+12.5%</h2>
+        </div>
+      </section>
+
+      <!-- Member Section -->
+      <section id="member-section" class="p-6 hidden"></section>
+
+      <!-- Notify Section -->
+      <section id="notify-section" class="p-6 hidden"></section>
+
+      <!-- Stats Section -->
+      <section id="stats-section" class="hidden px-6 pb-6 space-y-6">
+        <!-- Revenue Chart -->
+        <div id="revenue-chart-container" class="bg-gray-900/80 p-6 rounded-xl shadow-md">
+          <h2 class="text-lg font-semibold text-white mb-4">Revenue Chart</h2>
+          <canvas id="revenueChart" height="100"></canvas>
+        </div>
+
+        <!-- Monthly Sales Table -->
+        <div id="monthly-sales-container" class="bg-gray-900/80 p-6 rounded-xl shadow-md">
+          <h2 class="text-lg font-semibold text-white mb-4">Monthly Sales Table</h2>
+          <table class="w-full table-auto text-left text-sm text-white">
+            <thead class="border-b border-white/20">
+              <tr>
+                <th class="pb-2">Month</th>
+                <th class="pb-2">Sales</th>
+                <th class="pb-2">Growth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-white/10">
+                <td>January</td>
+                <td>$12,000</td>
+                <td>+5%</td>
+              </tr>
+              <tr class="border-b border-white/10">
+                <td>February</td>
+                <td>$15,000</td>
+                <td>+8%</td>
+              </tr>
+              <tr class="border-b border-white/10">
+                <td>March</td>
+                <td>$14,000</td>
+                <td>-3%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- JS Modules -->
+  <script type="module">
+    const loadStatsView = (el) => {
+      const canvas = document.getElementById("revenueChart");
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [{
+              label: "Revenue",
+              data: [12000, 15000, 14000, 17000, 16000, 18000],
+              borderColor: "rgba(0, 255, 255, 0.7)",
+              backgroundColor: "rgba(0, 255, 255, 0.1)",
+              fill: true,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: "white" } } },
+            scales: {
+              x: { ticks: { color: "white" } },
+              y: { ticks: { color: "white" } }
+            }
+          }
+        });
+      }
+    };
+
+    import { loadMemberView } from './member.js';
+    import { loadNotifyView } from './notify.js';
+
+    const homeButton = document.getElementById('home-button');
+    const statsButton = document.getElementById('stats-button');
+    const notifyButton = document.getElementById('notify-button');
+    const memberButton = document.getElementById('member-button');
+
+    const dashboardSection = document.getElementById('dashboard-section');
+    const memberSection = document.getElementById('member-section');
+    const notifySection = document.getElementById('notify-section');
+    const statsSection = document.getElementById('stats-section');
+    const title = document.getElementById('main-title');
+
+    function hideAllSections() {
+      dashboardSection.classList.add('hidden');
+      memberSection.classList.add('hidden');
+      notifySection.classList.add('hidden');
+      statsSection.classList.add('hidden');
+    }
+
+    homeButton.addEventListener('click', () => {
+      title.textContent = 'Dashboard Overview';
+      hideAllSections();
+      dashboardSection.classList.remove('hidden');
+    });
+
+    statsButton.addEventListener('click', () => {
+      title.textContent = 'Sales Statistics';
+      hideAllSections();
+      statsSection.classList.remove('hidden');
+      loadStatsView(statsSection);
+    });
+
+    notifyButton.addEventListener('click', () => {
+      title.textContent = 'Notifications';
+      hideAllSections();
+      notifySection.classList.remove('hidden');
+      loadNotifyView(notifySection);
+    });
+
+    memberButton.addEventListener('click', () => {
+      title.textContent = 'Member List';
+      hideAllSections();
+      memberSection.classList.remove('hidden');
+      loadMemberView(memberSection);
+    });
+  </script>
+</body>
+</html>
+ 
